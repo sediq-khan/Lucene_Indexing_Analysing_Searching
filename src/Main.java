@@ -2,11 +2,14 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import org.jsoup.Jsoup;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class Main {
@@ -59,19 +62,47 @@ public class Main {
 
     }
 
-    private void search(String searchQuery) throws IOException, ParseException {
+    private void search(String searchQuery) throws IOException {
+        String htmlTitle = null;
         searcher = new Searcher(userInputIndexDir);
+        TopDocs hits = null;
         long startTime = System.currentTimeMillis();
-        TopDocs hits = searcher.search(searchQuery);
+        try {
+
+            hits = searcher.search(searchQuery);
+
+        } catch (ParseException ex) {
+            System.out.println("Parse Exception: " + ex.getMessage());
+        }
         long endTime = System.currentTimeMillis();
 
-        System.out.println(hits.totalHits +
-                " documents found. Time :" + (endTime - startTime));
+        System.out.println(hits.totalHits + " documents found. Time :" + (endTime - startTime));
+        int i = 0;
+        System.out.println("\n ############## << SEARCH INFO >> ########################");
+        String title = "";
         for(ScoreDoc scoreDoc : hits.scoreDocs) {
+            i++;
             Document doc = searcher.getDocument(scoreDoc);
-            System.out.println("File: "
-                    + doc.get(userInputDataDir));
+            File tempFile = new File(doc.get("FILE_PATH"));
+            if (tempFile.getName().endsWith(".html") || tempFile.getName().endsWith(".htm")){
+                org.jsoup.nodes.Document htmlDoc = Jsoup.parse(tempFile, "UTF-8");
+                title = htmlDoc.title();
+            }
+            long milliseconds = tempFile.lastModified();
+            DateFormat format=new SimpleDateFormat("MMMM dd, yyyy hh:mm a");
+            long timeModified = tempFile.lastModified();
+            System.out.println("\n");
+            System.out.println("File: " + doc.get("FILE_NAME") + "\n" +
+                    " Ranked: " + i + "\n" +
+                    " File Path: " + doc.get("FILE_PATH") + "\n" +
+                    " Score: " + scoreDoc.score + "\n" +
+                    "Last Modified: " + format.format(milliseconds) +
+                    "\n Title: " + title
+                    + "\n"
+            );
+            title = "";
         }
+        System.out.println("\n ############## << END SEARCH >> ########################");
         searcher.close();
     }
 }
