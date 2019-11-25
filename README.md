@@ -5,7 +5,7 @@ please follow these steps:
 
 1. Clone this project to your local machine
 2. Navigate to the out\artifacts\LuceneDemo_jar\ directory through command line
-3. Step 3: Enter following command: java -jar LuceneDemo.jar F:\Lucene\Data sediq F:\Lucene\Index
+3. Enter following command: java -jar LuceneDemo.jar F:\Lucene\Data sediq F:\Lucene\Index
 
 your third step should look something like this
 
