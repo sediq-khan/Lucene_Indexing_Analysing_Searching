@@ -13,4 +13,6 @@ your third step should look something like this
 
 where first argument `F:\Lucene\Data` is the files to be indexed, second argument `sediq` is the search term, and the third argument `F:\Lucene\Index` is the Index directory where lucene will place the output of index.
 
-please refer to file called `P01.pdf` to find instructions on this programming task.
+please refer to file called `P01.pdf` to find instructions on this programming task. Following screenshot shows a typical input and output of the program.
+
+![Typical Input and Expected output from this program](https://github.com/sediq-khan/Lucene_Indexing_Analysing_Searching/blob/master/Output.png)
